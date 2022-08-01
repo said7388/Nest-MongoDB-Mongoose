@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './products.model';
@@ -9,6 +14,7 @@ export class ProductsService {
     @InjectModel('Products') private readonly productModel: Model<Product>,
   ) {}
 
+  // Function for creating a new Product
   async insertProduct(title: string, img: string, location: string) {
     const newProduct = new this.productModel({
       title,
@@ -19,11 +25,13 @@ export class ProductsService {
     return result.id as string;
   }
 
+  // Function for get All Products
   async getProducts() {
     const products = await this.productModel.find({ versionKey: false }).exec();
     return products;
   }
 
+  // Get a single product by ID
   async getProductById(id: string) {
     const product = await this.productModel.findById(id).exec();
     return {
@@ -34,6 +42,7 @@ export class ProductsService {
     };
   }
 
+  // Update a product by ID
   async updateProduct(
     id: string,
     title: string,
@@ -61,12 +70,13 @@ export class ProductsService {
     }
   }
 
+  // Delete a product by ID
   async deleteProduct(id: string) {
     const result = await this.productModel
       .findByIdAndDelete({ _id: id })
       .exec();
     if (!result) {
-      throw new BadRequestException('Product not found!');
+      throw new HttpException('Product Not Found!', HttpStatus.NOT_FOUND);
     }
     return { message: 'Product deleted successfully' };
   }
