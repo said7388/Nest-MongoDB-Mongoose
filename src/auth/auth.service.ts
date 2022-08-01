@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -9,12 +10,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async createUser(
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-  ) {
+  async createUser(body: CreateAuthDto) {
+    const { email, firstName, lastName, password } = body;
     const existUser = await this.userService.findUserByEmail(email);
     if (existUser.length === 0) {
       const result = await this.userService.createNewUser(
@@ -40,8 +37,12 @@ export class AuthService {
     return `This action returns all auth`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async findOne(id: number) {
+    const accessToken = await this.jwtService.sign({
+      name: 'Abu Said',
+      id: id,
+    });
+    return accessToken;
   }
 
   update(id: number) {
