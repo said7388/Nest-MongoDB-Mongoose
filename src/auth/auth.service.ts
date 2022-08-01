@@ -32,24 +32,4 @@ export class AuthService {
       throw new BadRequestException('email already taken');
     }
   }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  async findOne(id: number) {
-    const accessToken = await this.jwtService.sign({
-      name: 'Abu Said',
-      id: id,
-    });
-    return accessToken;
-  }
-
-  update(id: number) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }
