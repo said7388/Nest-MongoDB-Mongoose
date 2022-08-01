@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { UpdateProductDto } from './products.model';
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -43,7 +44,7 @@ export class ProductsController {
   }
 
   @Put('update')
-  async updateProduct(@Body() body: any) {
+  async updateProduct(@Body() body: UpdateProductDto) {
     const { id, title, image, location } = body;
     const result = await this.productsService.updateProduct(
       id,
